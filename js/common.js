@@ -40,3 +40,14 @@ const tip =(msg)=>{
   toastBox.querySelector('.toast-body').innerHTML=msg
   toast.show()
 }
+const userName=document.querySelector('.navbar .font-weight-blod')
+const logoutBtn=document.querySelector('#logout')
+if(userName){userName.innerHTML=localStorage.getItem('user-name')
+}
+if(logoutBtn){
+  logoutBtn.addEventListener('click',function(){
+    localStorage.removeItem('user-token')
+    localStorage.removeItem('user-name')
+    location.href='./login.html'
+  })
+}
