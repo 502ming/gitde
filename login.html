@@ -98,10 +98,11 @@
 try{
   const res= await axios.post('/login',data)
   tip('登陆成功')
+  console.log(res);
   location.href='./index.html'
-  localStorage.setItem('user-token',res.data.data.token)
-  localStorage.setItem('user-name',res.data.data.username)  
-  tip('登陆成功')
+  localStorage.setItem('user-token',res.data.token)
+  localStorage.setItem('user-name',res.data.username)  
+  tip(res.message)
 }catch(e){console.dir(e)
    if(e.response.status ===400){
     tip('用户名或密码错误') 
