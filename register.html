@@ -88,7 +88,31 @@
     <script src="./lib/axios.js"></script>
     <script src="./js/common.js"></script>
     <script>
-      
+      document.querySelector('#btn-register').addEventListener('click',async function(){
+       const data=serialize(document.querySelector('form'),{hash:true})
+         if(!data.username||data.username.trim() ==='') return tip('用户名不能为空哦')        
+         if(!data.password||data.password.trim() ==='') return tip('密码不能为空哦')        
+       if(data.password.length<6) return tip('密码长度不能小于6位')
+       console.log(data);
+
+try{
+  const res= await axios.post('/register',data)
+    console.log(res);
+       tip('注册成功')
+      setTimeout(()=>{
+        location.href='./login.html'
+      },500)
+}catch(e){if(e.response ===409){
+    return tip(e.response.data.message)
+   }
+    tip('注册失败，服务器太忙咯')
+   
+  }
+ 
+
+
+      })
+
     </script>
   </body>
 </html>

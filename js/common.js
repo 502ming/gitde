@@ -6,6 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 200)
 })
 
+
+//axios公共配置
+axios.defaults.baseURL='http://ajax-api.itheima.net'
+
+//axios其他配置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const toastBox = document.querySelector('#myToast')
 const toast = new bootstrap.Toast(toastBox, {
   animation: true, // 是否有动画
@@ -14,6 +37,6 @@ const toast = new bootstrap.Toast(toastBox, {
 })
 
 const tip =(msg)=>{
-  toastBox.querySelector('.toast-body').innerHTML=' msg'
+  toastBox.querySelector('.toast-body').innerHTML=msg
   toast.show()
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="./bootstrap/bootstrap-icons.css">
+  <style>
+    #myBox {
+      width: 200px;
+      height: 50px;
+      line-height: 40px;
+      padding: 5px 20px;
+      /* 水平居中 */
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      /* 居顶 20px  */
+      top: 20px;
+      background-color: pink;
+    }
+  </style>
+</head>
+<body>
+  <div id="myBox" class="toast">我是一个提示</div>
+  <script src="./bootstrap/bootstrap.min.js"></script>
+  <script>
+    const toastBox = document.querySelector('#myBox')
+    const toast = new bootstrap.Toast(toastBox, {
+      animation: true, // 是否有动画
+      autohide: true, // 是否自动隐藏
+      delay: 3000 // 停留多久
+    })
+    toast.show()
+  </script>
+  
+</body>
+</html>
