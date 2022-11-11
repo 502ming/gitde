@@ -20,6 +20,8 @@ const {data}=await axios.get('/dashboard')
 
  initYearChart(data.year)
  initSalaryChart(data.salaryData)
+ initGroupChart(data.groupData)
+ initGenderChart(data.salaryData)
 })
 
 
@@ -112,8 +114,122 @@ function initSalaryChart(salaryData){
      
     }
   ]
+}
   
     myChart.setOption(option)
   }
-//   傲娇软萌桃幺幺丶
- }
+//班级每组薪资
+function initGroupChart(groupData){
+  const myChart=echarts.init(document.querySelector('#lines'))
+const option = {
+  xAxis: {
+    
+    type: 'category',
+    data: groupData[1].map(item=>item.name),
+  },
+  yAxis: {
+   
+    type: 'value'
+  },
+  tooltip:{
+    trigger:'item'
+  },
+  series: [
+    {
+      name: '期望薪资',
+      data: groupData[1].map(item=>item.hope_salary),
+      type: 'bar'
+    },
+    {
+       name: '实际薪资',
+       data: groupData[1].map(item=>item.salary),
+      type: 'bar'
+    }
+  ]
+};
+ myChart.setOption(option)
+
+const btns=document.querySelector('#btns')
+btns.addEventListener('click', e=>{
+  if(e.target.tagName==='BUTTON'){
+    btns.querySelector('.btn-blue').classList.remove('btn-blue')
+    e.target.classList.add('btn-blue')
+    const group=e.target.innerText
+    option.xAxis.data=groupData[group].map(item=>item.name)
+    option.series[0].data=groupData[group].map(item=>item.hope_salary)
+    option.series[1].data=groupData[group].map(item=>item.salary)
+    myChart.setOption(option)
+  }
+})
+
+
+
+
+}
+
+
+
+
+//nannv
+
+function initGenderChart(salaryData){
+  const myChart=echarts.init(document.querySelector('#gender'))
+  const option = {
+    title: [{
+      text: '男女薪资分布',
+      left:10,
+      top:10
+    },
+    {
+      text: '男',
+      left:'center',
+      top: '48%',
+    },
+     {
+      text: '女',
+      left:'center',
+      top:'88%',
+    }],
+    tooltip: {
+      trigger: 'item'
+    },
+    color:['#fda224','#5097ff','#3abcfa','#34d39a'],
+    series: [
+      {
+        name: '男生',
+        type: 'pie',
+        radius: ['20%','30%'],
+        center:['50%','30%'],
+        // data: [
+        //   { value: 1048, name: 'Search Engine' },
+        //   { value: 735, name: 'Direct' },
+        //   { value: 580, name: 'Email' },
+        //   { value: 484, name: 'Union Ads' },
+        //   { value: 300, name: 'Video Ads' }
+        // ],
+       data:salaryData.map(item=>({
+      
+          name:item.label,
+          value:item.b_count,
+        
+       }))
+      },
+      {
+        name: '男生',
+        type: 'pie',
+        radius: ['20%','30%'],
+        center:['50%','70%'],
+        data:salaryData.map(item=>({
+      
+          name:item.label,
+          value:item.g_count,
+        
+       }))
+      }
+      
+    ]
+  };
+  
+    myChart.setOption(option)
+  
+}
