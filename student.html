@@ -78,7 +78,7 @@
             <!-- Navbar nav -->
             <div class="collapse navbar-collapse navbar-collapse-fade" id="navbar-main-collapse">
               <ul class="navbar-nav align-items-lg-center">
-                <!-- Home  -->
+                <!-- Home  --> 
                 <li class="nav-item">
                   <a class="nav-link pl-lg-0" href="./index.html"> 首页 </a>
                 </li>
@@ -145,7 +145,7 @@
                       </tr>
                     </thead>
                     <tbody class="list">
-                      <!-- <tr>
+                       <tr>
                       <td>张杰</td>
                       <td>20</td>
                       <td>男</td>
@@ -157,7 +157,7 @@
                         <a href="javascript:;" class="text-success mr-3"><i class="bi bi-pen"></i></a>
                         <a href="javascript:;" class="text-danger"><i class="bi bi-trash"></i></a>
                       </td>
-                    </tr> -->
+                    </tr> 
                     </tbody>
                   </table>
                 </div>
@@ -273,7 +273,129 @@
     <script src="./lib/form-serialize.js"></script>
     <script src="./js/common.js"></script>
     <script>
+      async function renderList(){
+      const res=await axios.get('/students')
+      const htmlStr=res.data.map((item)=>{
+      return` </tr>
+                    </thead>
+                    <tbody class="list">
+                       <tr>
+                      <td>${item.name}</td>
+                      <td>${item.age}</td>
+                      <td>${item.gender===0?'男':'女'}</td>
+                      <td>${item.group}</td>
+                      <td>${item.hope_salary}</td>
+                      <td>${item.salary}</td>
+                      <td>${item.province}${item.city}${item.area}</td>
+                      <td>
+                        <a href="javascript:;" class="text-success mr-3"><i data-id='${item.id}' class="bi bi-pen"></i></a>
+                        <a href="javascript:;" class="text-danger"><i data-id='${item.id}' class="bi bi-trash"></i></a>
+                      </td>
+                       </tr>`
+                     
+                     }).join('')
+                    document.querySelector('.list').innerHTML=htmlStr
+                    document.querySelector('.total').innerHTML= res.data.length
+                   
+      }
+      renderList()
+
+
+      //删除功能
+      document.querySelector('.list').addEventListener('click', async (e)=>{
+        const btn=e.target
+        if (btn.classList.contains('bi-trash')){
+          const id=btn.dataset.id
+          try{
+            const res=await axios.delete('/students/${id}')
+            renderList()
+
+          }catch(e){
+            alert('删除失败')
+            console.dir(e)
+          }
+        } 
+      })
       
+//实现弹框
+  const modalBox=document.querySelector('#modal')
+  const modal=new bootstrap.Modal(modalBox)
+  const form=document.querySelector('#form')
+ const title=document.querySelector('#modal .modal-title')
+ 
+  document.querySelector('#openModal').addEventListener('click',()=>{
+    form.reset()
+   
+    title.innerHTML= '添加学员'
+    modalBox.dataset.id='add'
+    
+    modal.show()
+  })
+
+
+
+  //省市区
+  const pSelect=document.querySelector('[name=province]')
+  const cSelect=document.querySelector('[name=city]')
+  const aSelect=document.querySelector('[name=area]')
+  
+  const initCity= async()=>{
+    const {data:province}=await axios.get('/api/province')  
+  const phtml=province.map(item=>`<option value="${item}">${item}</option>`).join('')
+  pSelect.innerHTML=`<option value="">--省份--</option>${phtml}`
+
+  pSelect.addEventListener('change',async () =>{
+    aSelect.value=''
+
+    const{data:city}=await axios.get('/api/city',{
+      params:{
+        pname:pSelect.value
+      }
+    })
+    const chtml=city.map(item=>`<option value="${item}">${item}</option>`).join('')
+  cSelect.innerHTML=`<option value="">--城市--</option>${chtml}`
+  })
+
+
+  //区
+  cSelect.addEventListener('change',async () =>{
+    const{data:area}=await axios.get('/api/area',{
+      params:{
+        pname:pSelect.value,
+        cname:cSelect.value
+      }
+    })
+
+  const ahtml=area.map(item=>`<option value="${item}">${item}</option>`).join('')
+  aSelect.innerHTML=`<option value="">--区--</option>${ahtml}`
+  })
+ 
+}
+  initCity()
+
+
+
+   const submitBtn=document.querySelector('#submit')
+   submitBtn.addEventListener('click', async()=>{
+    const data=serialize(form,{hash:true})
+  data.age=+data.age
+  data.gender=+ data.gender
+  data.hope_salary=+ data.hope_salary
+  data.salary=+ data.salary
+  data.group=+ data.group
+if(modalBox.dataset.id==='add'){
+try{
+await axios.post('./students',data)
+renderList()
+modal.hide()
+}catch(e){
+  console.dir(e)
+  alert('添加失败')
+}
+}else{
+
+}
+  })
     </script>
   </body>
 </html>
